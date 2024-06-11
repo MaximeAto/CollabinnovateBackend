@@ -20,10 +20,10 @@ def resendvalidation():
     codeping = generer_code_pin()
     confirmation_mail(refresh_token.email, codeping)
     response = make_response(jsonify({'message': 'Token are been refreshed', 'user_id': refresh_token.email}), 200)
-    response.set_cookie('token', refresh_token.refresh_token, httponly=True, secure=True, samesite='Lax')
-    response.set_cookie('codeping', codeping, httponly=True, secure=True, samesite='Lax')
+    response.set_cookie('token', refresh_token.refresh_token)
+    response.set_cookie('codeping', codeping)
     
-    return jsonify({"message":'good'})
+    return jsonify({'message': codeping})
 
 @auth.route('/emailconfirmation/<codeping>', methods=['GET'])
 def confirmMail(codeping):
@@ -34,7 +34,7 @@ def confirmMail(codeping):
 
         # Vérifier si le codeping fourni correspond à celui stocké dans les cookies
         if codeping != cookie_codeping:
-            return jsonify({'message': 'Invalid codeping.'}), 400
+            return jsonify({'message': "Incorect code"}), 400
 
         # Décoder le token JWT pour vérifier sa validité
         decoded_token = jwt.decode(token, SECRET_JWT_KEY, algorithms=['HS256'])
@@ -56,16 +56,16 @@ def confirmMail(codeping):
 @auth.route('/login', methods=['POST'])
 def login():
     try:
-        data = request.json
+        data = request.form
 
         # Vérification de la présence du nom d'utilisateur et du mot de passe
-        username = data.get('username')
-        password = data.get('password')
+        username = data['username']
+        password = data['password']
         if not username or not password:
             raise ValueError('Username and password are required.')
 
         # Vérification si l'utilisateur existe
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(email=username).first()
         if not user:
             raise ValueError('User not found.')
 
@@ -89,12 +89,12 @@ def logout():
 
 
 def generer_code_pin():
-    return ''.join([str(random.randint(0, 9)) for _ in range(6)])
+    return ''.join([str(random.randint(0, 9)) for _ in range(10)])
 
 def generate_token(email):
     token_payload = {
       'user_id': email,
-      'exp': datetime.utcnow() + timedelta(hours=12)
+      'exp': datetime.utcnow() + timedelta(hours=1)
     }
     token = jwt.encode(token_payload, SECRET_JWT_KEY, algorithm='HS256')
 

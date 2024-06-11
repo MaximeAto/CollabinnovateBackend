@@ -8,7 +8,7 @@ from collabinnovate.manage_user_accounts.user.model import User
 from collabinnovate.manage_user_accounts.authentification.routes import generate_token, generer_code_pin
 from werkzeug.security import generate_password_hash
 from collabinnovate.manage_user_accounts.notification.utils import confirmation_mail
-
+from collabinnovate import mail
 import re
 from flask import render_template
 
@@ -67,7 +67,7 @@ def get_all_users():
 def get_user(user_id):
   pass
 
-@users.route('/create', methods=['POST'])
+@users.route('/create', methods=['POST','GET'])
 def create_user():
   try:
     data = request.form
@@ -105,28 +105,29 @@ def create_user():
       password=hashed_password,
     )
 
-    db.session.add(new_user)
-    db.session.commit()
-
-
     codeping = generer_code_pin()
 
     # Génération du token JWT
     token = generate_token(new_user.email)
 
     # Envoie du mail d'inscription
-    confirmation_mail(data['email'], codeping)
+    confirmation_mail(data['email'], codeping,mail)
     log_message = "user créée avec succès"
     app = current_app._get_current_object()
     app.logger.info(log_message)
 
+    db.session.add(new_user)
+    db.session.commit()
 
     # Création de la réponse avec le cookie HTTPOnly
-    response = make_response(jsonify({'message': 'User created successfully.', 'user_id': new_user.email}), 200)
-    response.set_cookie('token', token, httponly=True, secure=True, samesite='Lax')
-    response.set_cookie('codeping', codeping, httponly=True, secure=True, samesite='Lax')
+    response = make_response("Inscription réussie !")
+    response.set_cookie( key='token', value= token)
+    response.set_cookie(key='codeping', value=codeping)
 
-    return jsonify({"message":"good"})
+    app.logger.info(f'Token cookie set: {token}')
+    app.logger.info(f'Codeping cookie set: {codeping}')
+
+    return jsonify({"message": codeping})
 
   except Exception as e:
     return jsonify({'message': f'An error occurred: {str(e)}'}), 500
