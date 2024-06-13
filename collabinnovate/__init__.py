@@ -96,6 +96,8 @@ def create_app():
     from collabinnovate.manage_user_accounts.notification.routes import notifications
     from collabinnovate.manage_problems.routes import problems
     from collabinnovate.manage_solutions.routes import solutions
+    from collabinnovate.manage_solutions.comments.routes import comments
+    from collabinnovate.manage_solutions.mentions.routes import mentions
 
 
     app.register_blueprint(swaggerui_blueprint)
@@ -114,6 +116,8 @@ def create_app():
     app.register_blueprint(problems, url_prefix='/problems')
     app.register_blueprint(solutions, url_prefix='/solutions')
     app.register_blueprint(notifications, url_prefix='/notifications')
+    app.register_blueprint(comments, url_prefix='/comments')
+    app.register_blueprint(mentions, url_prefix='/mentions')
     
     db.create_all()
     

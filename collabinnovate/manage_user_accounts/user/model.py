@@ -28,6 +28,8 @@ class User(db.Model):
   notifications = db.relationship('Notification', backref = 'users')
   sessions = db.relationship('Session', backref = 'users')
   groups = db.relationship('Group', secondary=group_membership, backref='users')
+  comments = db.relationship('Comment', backref='users')
+
   
 
   

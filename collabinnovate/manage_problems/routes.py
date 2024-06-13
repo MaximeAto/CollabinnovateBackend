@@ -19,14 +19,23 @@ def thousand_problems():
 
 
 def generate_fake_problems():
+
     accounts_id = list(range(1, 21))
+    categories = ['Health', 'Education', 'Infrastructure', 'Environment', 'Safety']
+    countries = ['USA', 'Canada', 'France', 'Germany', 'Australia']
+    cities = ['New York', 'Toronto', 'Paris', 'Berlin', 'Sydney']
+
     problem = Problem(
         account_id=fake.random_element(elements=accounts_id),
-        title=fake.sentence(),
-        activity_requiring_improvement=fake.text(),
-        affected_population=fake.paragraph(),
-        concerns_of_affected_population=fake.paragraph(),
-        impact_on_affected_population=fake.paragraph(),
+        title=fake.sentence(nb_words=6),
+        country=fake.random_element(elements=countries),
+        city=fake.random_element(elements=cities),
+        category=fake.random_element(elements=categories),
+        deadline=fake.date_time_between(start_date='now', end_date='+30d'),
+        activity_requiring_improvement=fake.text(max_nb_chars=200),
+        affected_population=fake.paragraph(nb_sentences=3),
+        concerns_of_affected_population=fake.paragraph(nb_sentences=3),
+        impact_on_affected_population=fake.paragraph(nb_sentences=3),
         quantitative_volume_affected_population=random.randint(1, 2000)
     )
     db.session.add(problem)

@@ -117,5 +117,9 @@ class Solution(db.Model):
     employment_promotion_economic_insertion = db.Column(db.Text)
     governance_decentralization_strategic_state_management = db.Column(db.Text)
 
+    comments = db.relationship('Comment', backref='solutions')
+    mention = db.relationship('Mention', backref='solutions', uselist = False)
+
+
 
 

@@ -13,7 +13,7 @@ fake = Faker()
 
 @accounts.route("/hundred_accounts", methods=['POST'])
 def hundred_candidates():
-    users_id = c
+    users_id = list(range(1, 21))
     
     for _ in range(20):
         
