@@ -1,4 +1,6 @@
 
+
+from datetime import datetime
 import random
 from faker import Faker
 from flask import Blueprint, jsonify, request, abort
@@ -6,6 +8,8 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from collabinnovate import db
 from collabinnovate.manage_problems.model import Problem
+from collabinnovate.manage_user_accounts.account.model import Account
+from collabinnovate.manage_user_accounts.user.model import User
 
 problems = Blueprint('problems', __name__)
 fake = Faker()
@@ -41,26 +45,50 @@ def generate_fake_problems():
     db.session.add(problem)
     db.session.commit()
 
+
 # Créer un nouveau problème
-@problems.route("/add", methods=["POST"])
-def create_problem():
-  data = request.get_json()
-  try:
-      new_problem = Problem(
-          account_id=data['account_id'],
-          title=data['title'],
-          activity_requiring_improvement=data.get('activity_requiring_improvement'),
-          affected_population=data.get('affected_population'),
-          concerns_of_affected_population=data.get('concerns_of_affected_population'),
-          impact_on_affected_population=data.get('impact_on_affected_population'),
-          quantitative_volume_affected_population=data.get('quantitative_volume_affected_population')
-      )
-      db.session.add(new_problem)
-      db.session.commit()
-      return jsonify(new_problem.id), 201
-  except SQLAlchemyError as e:
-      db.session.rollback()
-      abort(400, description=str(e))
+@problems.route("/add/<username>", methods=["POST"])
+def create_problem(username):
+    data = request.get_json()
+    user = User.query.filter_by(email=username).first()
+    account = Account.query.filter_by(user_id = user.id).first()
+    required_fields = [ 'problemTitle', 'country', 'city', 'category', 'deadline',
+                   'business_needs_improvement', 'population_affected', 
+                   'concern_population_affected', 'impacts_on_these_populations',
+                   'population_volume', 'problemTitle']
+
+    
+    for field in required_fields:
+        if field not in data:
+            return jsonify({"error": f"Missing required field: {field}"}), 400
+    
+    try:
+        # Convertir la deadline en date (sans l'heure)
+        deadline = datetime.strptime(data['deadline'], '%Y-%m-%d').date()
+        
+        new_problem = Problem(
+            account_id=account.id,
+            title=data['problemTitle'],
+            about_problem = data['aboutProblem'],
+            country=data['country'],
+            city=data['city'],
+            category=data['category'],
+            deadline=deadline,
+            activity_requiring_improvement=data.get('business_needs_improvement'),
+            affected_population=data.get('population_affected'),
+            concerns_of_affected_population=data.get('concern_population_affected'),
+            impact_on_affected_population=data.get('impacts_on_these_populations'),
+            quantitative_volume_affected_population=data.get('population_volume')
+        )
+        db.session.add(new_problem)
+        db.session.commit()
+        return jsonify({"message": "The problem has been added with success", "id": new_problem.id}), 201
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({"message": str(e)}), 400
+    except ValueError as e:
+        return jsonify({"message": f"Incorrect date format: {e}"}), 400
+    
 
 # Obtenir la liste de tous les problèmes
 @problems.route("/all", methods=["GET"])

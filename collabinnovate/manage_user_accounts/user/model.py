@@ -24,7 +24,7 @@ class User(db.Model):
   confirmed = db.Column(db.Boolean, default= False)
 
 
-  accounts = db.relationship('Account', backref = 'users')
+  accounts = db.relationship('Account', backref = 'users',uselist = False)
   notifications = db.relationship('Notification', backref = 'users')
   sessions = db.relationship('Session', backref = 'users')
   groups = db.relationship('Group', secondary=group_membership, backref='users')

@@ -4,6 +4,7 @@ from faker import Faker
 from flask import Blueprint, jsonify, make_response, request, current_app
 import jwt
 from collabinnovate import db,LogginFormatter
+from collabinnovate.manage_user_accounts.account.model import Account
 from collabinnovate.manage_user_accounts.user.model import User
 from collabinnovate.manage_user_accounts.authentification.routes import generate_token, generer_code_pin
 from werkzeug.security import generate_password_hash
@@ -15,9 +16,7 @@ from flask import render_template
 
 users = Blueprint('users', __name__)
 fake = Faker()
-# from faker.providers import internet, lorem
-# fake.add_provider(internet)
-# fake.add_provider(lorem)
+
 
   
   
@@ -119,6 +118,14 @@ def create_user():
     db.session.add(new_user)
     db.session.commit()
 
+    account = Account(
+      user_id=new_user.id,
+      account_details={},
+      role="client"
+    )
+    db.session.add(account)
+    db.session.commit()
+  
     # Création de la réponse avec le cookie HTTPOnly
     response = make_response("Inscription réussie !")
     response.set_cookie( key='token', value= token)
@@ -127,8 +134,7 @@ def create_user():
     app.logger.info(f'Token cookie set: {token}')
     app.logger.info(f'Codeping cookie set: {codeping}')
 
-    return jsonify({"message": codeping})
-
+    return jsonify({"token": token, "ping": codeping, "email": data['email'] })
   except Exception as e:
     return jsonify({'message': f'An error occurred: {str(e)}'}), 500
   

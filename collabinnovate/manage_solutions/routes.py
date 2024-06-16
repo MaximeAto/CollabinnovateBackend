@@ -99,8 +99,6 @@ def thousand_solution():
     return jsonify(message = "les 1000 solutions ont été enregistré")
 
 
-
-
 # Route pour créer une nouvelle solution
 @solutions.route('/add', methods=['POST'])
 def create_solution():

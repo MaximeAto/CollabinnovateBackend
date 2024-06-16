@@ -38,7 +38,6 @@ def confirmMail(codeping):
 
         # Décoder le token JWT pour vérifier sa validité
         decoded_token = jwt.decode(token, SECRET_JWT_KEY, algorithms=['HS256'])
-        user_id = decoded_token['user_id']
 
         # Vérifier si le token JWT est encore valide
         if datetime.utcnow() > datetime.fromtimestamp(decoded_token['exp']):
@@ -62,16 +61,17 @@ def login():
         username = data['username']
         password = data['password']
         if not username or not password:
-            raise ValueError('Username and password are required.')
+            return jsonify({'message' :'Username and password are required.'})
 
         # Vérification si l'utilisateur existe
         user = User.query.filter_by(email=username).first()
         if not user:
-            raise ValueError('User not found.')
+            return jsonify({'message' :'User not found.'})
+            
 
         # Vérification du mot de passe
         if not check_password_hash(user.password, password):
-            raise ValueError('Incorrect password.')
+            return jsonify({'message' :'Incorrect password.'})
 
         # Authentification réussie
         # implémentation la logique de création de jeton JWT ou de session utilisateur
@@ -87,6 +87,10 @@ def logout():
     # implémentation la logique de déconnexion, comme la suppression de la session utilisateur
     return jsonify({'message': 'Logout successful.'}), 200
 
+@auth.route('/refreshtoken/<email>', methods=['GET'])
+def refresh_token(email):
+    refreshed_token = generate_token(email)
+    return {'refresh_token' : refreshed_token, 'email' : email}
 
 def generer_code_pin():
     return ''.join([str(random.randint(0, 9)) for _ in range(10)])
@@ -94,23 +98,12 @@ def generer_code_pin():
 def generate_token(email):
     token_payload = {
       'user_id': email,
-      'exp': datetime.utcnow() + timedelta(hours=1)
+      'exp': datetime.utcnow() + timedelta(hours=24)
     }
     token = jwt.encode(token_payload, SECRET_JWT_KEY, algorithm='HS256')
 
     return token
 
 
-def refresh_token():
 
-        # Récupérer le token JWT expiré depuis les cookies
-        expired_token = request.cookies.get('token')
-
-        # Décoder le token expiré pour récupérer l'email
-        decoded_token = jwt.decode(expired_token, SECRET_JWT_KEY, algorithms=['HS256'])
-        email = decoded_token['user_id']
-
-        # Générer un nouveau token JWT avec la même adresse email mais avec une nouvelle expiration
-        refreshed_token = generate_token(email)
-        return {'refresh_token' : refreshed_token, 'email' : email}
 
