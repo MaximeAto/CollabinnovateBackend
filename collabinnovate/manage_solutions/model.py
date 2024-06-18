@@ -47,11 +47,10 @@ class Solution(db.Model):
     financing_needed = db.Column(db.String(100))
     investment_characteristics = db.Column(db.Text)
     suppliers = db.Column(JSON)
-    amount = db.Column(db.Float)
 
     # Working capital fields
-    variable_cost = db.Column(db.Float)
-    fixed_cost = db.Column(db.Float)
+    variable_cost = db.Column(JSON)
+    fixed_cost = db.Column(JSON)
 
     # Financial forecast fields
     offers = db.Column(JSON)
@@ -60,41 +59,19 @@ class Solution(db.Model):
 
     # Profit generation fields
     gross_margin = db.Column(db.Float)
-    net_profit = db.Column(db.Float)
+    net_profit = db.Column(JSON)
 
     # Cash flow plan fields
-    cash = db.Column(db.Float)
+    Cash_flow_plan = db.Column(JSON)
 
     # Financing need field
-    financing_need = db.Column(db.Text)
+    financing_need = db.Column(db.Float)
 
     # Financing phase fields
     financing_phase = db.Column(db.String(100))
 
     # Financing source fields
-
-    # Equity
-    private_savings = db.Column(db.Boolean)
-    private_sphere_borrowing = db.Column(db.Boolean)
-    private_shareholders = db.Column(db.Boolean)
-    startup_sponsors = db.Column(db.Boolean)
-    business_agents = db.Column(db.Boolean)
-    incubator_nursery = db.Column(db.Boolean)
-    mixed_capital = db.Column(db.Boolean)
-
-    # Credit
-    bank_credit = db.Column(db.Boolean)
-    startup_launch_credit = db.Column(db.Boolean)
-    mezzanine_financing = db.Column(db.Boolean)
-
-    # Public subsidy for business creation
-    business_creation_aid_program = db.Column(db.Boolean)
-    startup_contests = db.Column(db.Boolean)
-
-    # Crowdfunding
-    crowdfunding = db.Column(db.Boolean)
-    crowd_investing = db.Column(db.Boolean)
-    crowd_lending = db.Column(db.Boolean)
+    financing_source  = db.Column(JSON)
 
     # Capital provider remuneration strategy field
     remuneration_type = db.Column(db.String(100))
@@ -112,10 +89,10 @@ class Solution(db.Model):
     periodic_profit_percentage = db.Column(db.Text)
 
     # Strategy mobilized pillars fields
-    economic_structural_transformation = db.Column(db.Text)
-    capital_wellbeing_development = db.Column(db.Text)
-    employment_promotion_economic_insertion = db.Column(db.Text)
-    governance_decentralization_strategic_state_management = db.Column(db.Text)
+    economic_structural_transformation = db.Column(db.String(100))
+    capital_wellbeing_development = db.Column(db.String(100))
+    employment_promotion_economic_insertion = db.Column(db.String(100))
+    governance_decentralization_strategic_state_management = db.Column(db.String(100))
 
     comments = db.relationship('Comment', backref='solutions')
     mention = db.relationship('Mention', backref='solutions', uselist = False)
