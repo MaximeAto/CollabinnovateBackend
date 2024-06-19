@@ -10,6 +10,7 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     solution_id = db.Column(db.Integer, db.ForeignKey('solutions.id'), nullable=False)
     comment = db.Column(db.Text)
+    overall = db.Column(db.Integer)
     
     
 

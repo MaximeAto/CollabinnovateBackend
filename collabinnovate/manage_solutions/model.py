@@ -24,6 +24,7 @@ class Solution(db.Model):
 
     # Distribution channels fields
     direct_sales = db.Column(db.Boolean)
+    retailSales = db.Column(db.Boolean)
     direct_sales_details = db.Column(db.Text)
     wholesale = db.Column(db.Boolean)
     informal = db.Column(db.Boolean)
@@ -85,14 +86,9 @@ class Solution(db.Model):
     necessary_capital_explanation = db.Column(db.Text)
     expected_revenue_explanation = db.Column(db.Text)
     investment_return_demonstration = db.Column(db.Text)
-    investment_repayment = db.Column(db.Text)
-    periodic_profit_percentage = db.Column(db.Text)
 
     # Strategy mobilized pillars fields
-    economic_structural_transformation = db.Column(db.String(100))
-    capital_wellbeing_development = db.Column(db.String(100))
-    employment_promotion_economic_insertion = db.Column(db.String(100))
-    governance_decentralization_strategic_state_management = db.Column(db.String(100))
+    strategicpillar = db.Column(db.String(100))
 
     comments = db.relationship('Comment', backref='solutions')
     mention = db.relationship('Mention', backref='solutions', uselist = False)

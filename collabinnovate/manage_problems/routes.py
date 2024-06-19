@@ -32,6 +32,7 @@ def generate_fake_problems():
     problem = Problem(
         account_id=fake.random_element(elements=accounts_id),
         title=fake.sentence(nb_words=6),
+        about_problem=fake.paragraph(nb_sentences=5),
         country=fake.random_element(elements=countries),
         city=fake.random_element(elements=cities),
         category=fake.random_element(elements=categories),
@@ -85,9 +86,9 @@ def create_problem(username):
         return jsonify({"message": "The problem has been added with success", "id": new_problem.id}), 201
     except SQLAlchemyError as e:
         db.session.rollback()
-        return jsonify({"message": str(e)}), 400
+        return jsonify({"message": "Registration error"}), 400
     except ValueError as e:
-        return jsonify({"message": f"Incorrect date format: {e}"}), 400
+        return jsonify({"message": "Registration error"}), 400
     
 
 # Obtenir la liste de tous les problèmes

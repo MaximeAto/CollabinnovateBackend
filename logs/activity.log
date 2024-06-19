@@ -23,3 +23,12 @@
 2024-06-16 12:26:21,707 - http://127.0.0.1:5000/users/create - 127.0.0.1 - INFO - user créée avec succès
 2024-06-16 12:26:21,861 - http://127.0.0.1:5000/users/create - 127.0.0.1 - INFO - Token cookie set: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoibWF4YXRvMDAwQGdtYWlsLmNvbSIsImV4cCI6MTcxODYyMzU3N30.KXDFbX2oZhxXSgErbPzsRwssXCAfxd0WKspIZpYZso8
 2024-06-16 12:26:21,862 - http://127.0.0.1:5000/users/create - 127.0.0.1 - INFO - Codeping cookie set: 1991573979
+2024-06-18 17:48:48,597 - http://127.0.0.1:5000/users/create - 127.0.0.1 - INFO - user créée avec succès
+2024-06-18 17:48:48,816 - http://127.0.0.1:5000/users/create - 127.0.0.1 - INFO - Token cookie set: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoibWF4YXRvMDAwQGdtYWlsLmNvbSIsImV4cCI6MTcxODgxNTcyNH0.AYERndhsqojM4phNgBzlF3Y5o4m-XZSQ5z9ohM2K4XI
+2024-06-18 17:48:48,818 - http://127.0.0.1:5000/users/create - 127.0.0.1 - INFO - Codeping cookie set: 9525957819
+2024-06-18 23:11:39,535 - http://127.0.0.1:5000/users/create - 127.0.0.1 - INFO - user créée avec succès
+2024-06-18 23:11:39,700 - http://127.0.0.1:5000/users/create - 127.0.0.1 - INFO - Token cookie set: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoibWF4YXRvMDAwQGdtYWlsLmNvbSIsImV4cCI6MTcxODgzNTA5NH0.u6vYseR4RIb6XfduTef2bEA43R_IVUmnTBDLzdGb5EM
+2024-06-18 23:11:39,721 - http://127.0.0.1:5000/users/create - 127.0.0.1 - INFO - Codeping cookie set: 0988564062
+2024-06-19 14:21:13,118 - http://127.0.0.1:5000/users/create - 127.0.0.1 - INFO - user créée avec succès
+2024-06-19 14:21:13,286 - http://127.0.0.1:5000/users/create - 127.0.0.1 - INFO - Token cookie set: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoibWF4YXRvMDAwQGdtYWlsLmNvbSIsImV4cCI6MTcxODg4OTY2OX0.MUf9AbrBqZhuVIelTUMj9DKdrODlKsY4eMTFSfLYu5E
+2024-06-19 14:21:13,288 - http://127.0.0.1:5000/users/create - 127.0.0.1 - INFO - Codeping cookie set: 0281874283

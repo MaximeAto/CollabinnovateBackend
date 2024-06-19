@@ -17,7 +17,8 @@ def generate_fake_comments(num_comments=1000):
         comment = Comment(
             user_id=fake.random_element(elements=user_ids),
             solution_id=fake.random_element(elements=solution_ids),
-            comment=fake.paragraph(nb_sentences=3)
+            comment=fake.paragraph(nb_sentences=3),
+            overall = fake.random_element(elements = list(range(1,6)) ) 
         )
         db.session.add(comment)
         db.session.commit()

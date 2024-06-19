@@ -55,6 +55,14 @@ def hundred_candidates():
     
     db.session.add(user)
     db.session.commit()
+
+    account = Account(
+      user_id=user.id,
+      account_details={},
+      role="client"
+    )
+    db.session.add(account)
+    db.session.commit()
   
   return jsonify(message = "les 20 users ont été enregistré")
 

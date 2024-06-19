@@ -2,94 +2,108 @@ import random
 from flask import Blueprint, json, jsonify, request
 from collabinnovate import db
 from faker import Faker
-
+from sqlalchemy.exc import SQLAlchemyError
 from collabinnovate.manage_solutions.model import Solution
+from collabinnovate.manage_user_accounts.account.model import Account
+from collabinnovate.manage_user_accounts.user.model import User
 
 
 solutions = Blueprint('solutions', __name__)
 fake = Faker()
 
-def faker_solution ():
+def faker_solution():
     accounts_id = list(range(1, 21))
-    prolems = list(range(1,1001))
+    problems = list(range(1, 1001))
 
     solution = Solution(
-    account_id = fake.random_element(elements=accounts_id),
-    problem_id = fake.random_element(elements=prolems),
-    title=fake.company(),
-    description=fake.paragraph(),
-    product_offered=fake.word(),
-    service_offered=fake.word(),
-    customer_expectations=fake.paragraph(),
-    what_company_sells=fake.word(),
-    how_product_service_marketed=fake.paragraph(),
-    customer_access_method=fake.word(),
-    competitors=json.dumps([fake.company() for _ in range(random.randint(1, 5))]),
-    direct_sales=fake.boolean(),
-    direct_sales_details=fake.paragraph(),
-    wholesale=fake.boolean(),
-    informal=fake.boolean(),
-    advertising=fake.boolean(),
-    direct_marketing=fake.boolean(),
-    sales_promotion=fake.boolean(),
-    display=fake.boolean(),
-    word_of_mouth=fake.boolean(),
-    trade_show=fake.boolean(),
-    mail_order=fake.boolean(),
-    human_resources=json.dumps([
-        {
-            "position": fake.job(),
-            "tasks_to_perform": fake.sentence(),
-            "required_skills_experience": fake.sentence(),
-            "ideal_profile": fake.sentence(),
-            "monthly_salary": fake.random_int(1000, 5000)
-        }
-    ]),
-    legal_form=fake.word(),
-    financing_needed=fake.word(),
-    investment_characteristics=fake.paragraph(),
-    suppliers=json.dumps([fake.company() for _ in range(random.randint(1, 5))]),
-    amount=fake.random_int(1000, 10000),
-    variable_cost=fake.random_int(100, 1000),
-    fixed_cost=fake.random_int(100, 1000),
-    offers=json.dumps([
-        {
-            "Offer_Name": fake.word(),
-            "Offer_Price": fake.random_int(10, 100),
-            "Quantity_Sold": fake.random_int(1, 10),
-            "Revenue_Generated": fake.random_int(100, 1000),
-            "For_One_Month": fake.random_int(100, 1000),
-            "For_Three_Months": fake.random_int(300, 3000),
-            "For_Six_Months": fake.random_int(600, 6000),
-            "For_One_Year": fake.random_int(1000, 10000),
-            "For_Three_Years": fake.random_int(3000, 30000)
-        }
-    ]),
-    gross_margin=fake.random_int(100, 1000),
-    net_profit=fake.random_int(100, 1000),
-    cash=fake.random_int(100, 1000),
-    financing_need=fake.paragraph(),
-    financing_phase=fake.word(),
-    remuneration_type=fake.word(),
-    impactful_introduction=fake.paragraph(),
-    specific_problem_addressing=fake.paragraph(),
-    innovative_solution_proposal=fake.paragraph(),
-    team_presentation=fake.paragraph(),
-    startup_costs_explanation=fake.paragraph(),
-    necessary_capital_explanation=fake.paragraph(),
-    expected_revenue_explanation=fake.paragraph(),
-    investment_return_demonstration=fake.paragraph(),
-    investment_repayment=fake.paragraph(),
-    periodic_profit_percentage=fake.paragraph(),
-    economic_structural_transformation=fake.paragraph(),
-    capital_wellbeing_development=fake.paragraph(),
-    employment_promotion_economic_insertion=fake.paragraph(),
-    governance_decentralization_strategic_state_management=fake.paragraph()
-)
+        account_id=fake.random_element(elements=accounts_id),
+        problem_id=fake.random_element(elements=problems),
+        title=fake.company(),
+        description=fake.paragraph(),
+        product_offered=fake.word(),
+        service_offered=fake.word(),
+        customer_expectations=fake.paragraph(),
+        what_company_sells=fake.word(),
+        how_product_service_marketed=fake.paragraph(),
+        customer_access_method=fake.word(),
+        competitors=json.dumps([fake.company() for _ in range(random.randint(1, 5))]),
+        direct_sales=fake.boolean(),
+        retailSales=fake.boolean(),
+        direct_sales_details=fake.paragraph(),
+        wholesale=fake.boolean(),
+        informal=fake.boolean(),
+        advertising=fake.boolean(),
+        direct_marketing=fake.boolean(),
+        sales_promotion=fake.boolean(),
+        display=fake.boolean(),
+        word_of_mouth=fake.boolean(),
+        trade_show=fake.boolean(),
+        mail_order=fake.boolean(),
+        human_resources=json.dumps([
+            {
+                "position": fake.job(),
+                "tasks_to_perform": fake.sentence(),
+                "required_skills_experience": fake.sentence(),
+                "ideal_profile": fake.sentence(),
+                "monthly_salary": fake.random_int(1000, 5000)
+            }
+        ]),
+        legal_form=fake.word(),
+        financing_needed=fake.word(),
+        investment_characteristics=fake.paragraph(),
+        suppliers=json.dumps([fake.company() for _ in range(random.randint(1, 5))]),
+        variable_cost=json.dumps({
+            "variable_cost": fake.random_int(100, 1000)
+        }),
+        fixed_cost=json.dumps({
+            "fixed_cost": fake.random_int(100, 1000)
+        }),
+        offers=json.dumps([
+            {
+                "Offer_Name": fake.word(),
+                "Offer_Price": fake.random_int(10, 100),
+                "Quantity_Sold": fake.random_int(1, 10),
+                "Revenue_Generated": fake.random_int(100, 1000),
+                "For_One_Month": fake.random_int(100, 1000),
+                "For_Three_Months": fake.random_int(300, 3000),
+                "For_Six_Months": fake.random_int(600, 6000),
+                "For_One_Year": fake.random_int(1000, 10000),
+                "For_Three_Years": fake.random_int(3000, 30000)
+            }
+        ]),
+        quantity_sold=fake.random_int(1, 10),
+        revenue_generated=json.dumps({
+            "revenue_generated": fake.random_int(100, 1000)
+        }),
+        gross_margin=fake.random_int(100, 1000),
+        net_profit=json.dumps({
+            "net_profit": fake.random_int(100, 1000)
+        }),
+        Cash_flow_plan=json.dumps({
+            "cash_flow_plan": fake.random_int(100, 1000)
+        }),
+        financing_need=fake.random_int(100, 1000),
+        financing_phase=fake.word(),
+        financing_source=json.dumps([
+            {
+                "source": fake.company(),
+                "amount": fake.random_int(1000, 10000)
+            }
+        ]),
+        remuneration_type=fake.word(),
+        impactful_introduction=fake.paragraph(),
+        specific_problem_addressing=fake.paragraph(),
+        innovative_solution_proposal=fake.paragraph(),
+        team_presentation=fake.paragraph(),
+        startup_costs_explanation=fake.paragraph(),
+        necessary_capital_explanation=fake.paragraph(),
+        expected_revenue_explanation=fake.paragraph(),
+        investment_return_demonstration=fake.paragraph(),
+        strategicpillar=fake.word()
+    )
 
     db.session.add(solution)
     db.session.commit()
-
 
 
 @solutions.route("/thousand_solution", methods=["POST"])
@@ -100,19 +114,145 @@ def thousand_solution():
 
 
 # Route pour créer une nouvelle solution
-@solutions.route('/add', methods=['POST'])
-def create_solution():
-    data = request.json
-    new_solution = Solution(
-        title=data['title'],
-        problem_id=data['problem_id'],
-        account_id=data['account_id'],
-        description=data['description'],
-        # Assurez-vous de définir les autres champs requis ici
-    )
-    db.session.add(new_solution)
-    db.session.commit()
-    return jsonify({'message': 'Solution créée avec succès'}), 201
+
+@solutions.route('/add/<email>/<problemId>', methods=['POST'])
+def create_solution(email, problemId):
+    try:
+        data = request.get_json()
+        user = User.query.filter_by(email=email).first()
+        account = Account.query.filter_by(user_id=user.id).first()
+
+        # Extract competitors, humans, suppliers, fixedcosts, variablecosts, offers from FormData
+        competitors = data.get('competitors')
+        humans = data.get('humans')
+        suppliers = data.get('investment[suppliers]')
+        fixedcosts = data.get('fixedcosts')
+        variablecosts = data.get('variablecosts')
+        offers = data.get('financialforecast[offers]')
+        
+        print(competitors)
+
+        # Create new solution instance
+        new_solution = Solution(
+            title=data.get('solutionTitle'),
+            problem_id=problemId,
+            account_id=account.id,
+            
+            # Solution information fields
+            description=data.get('aboutSolution'),
+            product_offered=data.get('productsOnOffer'),
+            service_offered=data.get('servicesOnOffer'),
+            customer_expectations=data.get('customerExpectations'),
+            what_company_sells=data.get('companySales'),
+            how_product_service_marketed=data.get('how_product_service_marketed'),
+            customer_access_method=data.get('customer_access_method'),
+            
+            # Distribution channels fields
+            direct_sales=data.get('directSales'),
+            wholesale=data.get('wholesale'),
+            informal=data.get('informalSales'),
+            retailSales=data.get('retailSales'),
+            
+            # Promotion means fields
+            advertising=data.get('advertising'),
+            direct_marketing=data.get('directMarketing'),
+            sales_promotion=data.get('salesPromotion'),
+            display=data.get('display'),
+            word_of_mouth=data.get('wordOfMouth'),
+            trade_show=data.get('tradeShow'),
+            mail_order=data.get('mailOrder'),
+            
+            # Competitors and human resources fields
+            competitors=competitors,
+            human_resources=humans,
+            
+            # Legal form field
+            legal_form=data.get('legalForm'),
+            
+            # Required investment fields
+            financing_needed=data.get('investment')["needs"],
+            investment_characteristics=data.get('investment')["characteristics"],
+            suppliers=suppliers,
+            
+            # Working capital fields
+            variable_cost=variablecosts,
+            fixed_cost=fixedcosts,
+            
+            # Financial forecast fields
+            offers=offers,
+            quantity_sold= data.get('financialforecast')["quantitysold"],
+            revenue_generated={
+                'firstmonth': data.get('financialforecast')["salesgenerated"]["firstmonth"],
+                'thirdmonth': data.get('financialforecast')["salesgenerated"]["thirdmonth"],
+                'sixthmonth': data.get('financialforecast')["salesgenerated"]["sixthmonth"],
+                'firstyear': data.get('financialforecast')["salesgenerated"]["firstyear"],
+                'thirdyear': data.get('financialforecast')["salesgenerated"]["thirdyear"],
+            },
+            
+            # Cash flow plan fields
+            Cash_flow_plan={
+                'firstmonth': data.get('cashflowfirstmonth'),
+                'thirdmonth': data.get('cashflowthirdmonth'),
+                'sixthmonth': data.get('cashflowsixthmonth'),
+                'firstyear': data.get('cashflowfirstyear'),
+                'thirdyear': data.get('cashflowthirdyear'),
+            },
+            
+            # Financing need field
+            financing_need=data.get('financingNeed'),
+            
+            # Financing phase fields
+            financing_phase=data.get('financingPhase'),
+            
+            # Financing source fields
+            financing_source={
+                'equitycapital': {
+                    'privatesavings': data.get('financingSource')["equitycapital"]["privatesavings"],
+                    'privatesphere': data.get('financingSource')["equitycapital"]["privatesphere"],
+                    'privateshareholders': data.get('financingSource')["equitycapital"]["privateshareholders"],
+                    'startupsponsors': data.get('financingSource')["equitycapital"]["startupsponsors"],
+                    'businessagents': data.get('financingSource')["equitycapital"]["businessagents"],
+                    'incubatorandbusinessincubator': data.get('financingSource')["equitycapital"]["incubatorandbusinessincubator"],
+                    'mixedcapital': data.get('financingSource')["equitycapital"]["mixedcapital"],
+                },
+                'creditsource': {
+                    'bankCredit': data.get('financingSource')["creditsource"]["bankCredit"],
+                    'startupLaunchCredit': data.get('financingSource')["creditsource"]["startupLaunchCredit"],
+                    'mezzanineFinancing': data.get('financingSource')["creditsource"]["mezzanineFinancing"],
+                    'other': data.get('financingSource')["creditsource"]["other"],
+                },
+                'publicSubsidyforBusinessCreation': {
+                    'businessstartupprogram': data.get('financingSource')["publicSubsidyforBusinessCreation"]["businessstartupprogram"],
+                    'startupCompetition': data.get('financingSource')["publicSubsidyforBusinessCreation"]["startupCompetition"],
+                    'other': data.get('financingSource')["publicSubsidyforBusinessCreation"]["other"],
+                },
+                'crowdfundingSources': {
+                    'crowdfunding': data.get('financingSource')["crowdfundingSources"]["crowdfunding"],
+                    'crowdInvesting': data.get('financingSource')["crowdfundingSources"]["crowdInvesting"],
+                    'crowdLending': data.get('financingSource')["crowdfundingSources"]["crowdLending"],
+                    'other': data.get('financingSource')["crowdfundingSources"]["other"],
+                },
+            },
+            
+            # Capital provider remuneration strategy field
+            remuneration_type=data.get('remunerationType'),
+            
+            # Strategy mobilized pillars fields
+            strategicpillar=data.get('pillar'),
+        )
+        
+        db.session.add(new_solution)
+        db.session.commit()
+        return jsonify({'message': 'The solution has been added with success'}), 201
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({'message': 'Registration error'}), 400
+    except Exception as e:
+        print("je suis arrivé ici")
+        return jsonify({'message': 'Registration error'}), 500
+    
+
+
 
 # Route pour obtenir toutes les solutions
 @solutions.route('/all', methods=['GET'])
