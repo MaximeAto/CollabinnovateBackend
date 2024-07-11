@@ -29,6 +29,7 @@ class User(db.Model):
   sessions = db.relationship('Session', backref = 'users')
   groups = db.relationship('Group', secondary=group_membership, backref='users')
   comments = db.relationship('Comment', backref='users')
+  favoris = db.relationship('Favoris', backref='users')
 
   
 

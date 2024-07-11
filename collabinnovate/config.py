@@ -15,11 +15,10 @@ MAIL_PASSWORD = 'vbpd ofhv muxm vhff'
 MAIL_DEFAULT_SENDER = 'melainenkeng@gmail.com' 
 
 #Cookies
-SESSION_COOKIE_NAME = 'session'
-SESSION_COOKIE_DOMAIN = None
-SESSION_COOKIE_SECURE = False  # Pour un environnement de développement en HTTP
-SESSION_COOKIE_HTTPONLY = True
-
+JWT_TOKEN_LOCATION = ['cookies']
+JWT_COOKIE_CSRF_PROTECT = True
+JWT_ACCESS_COOKIE_PATH = '/' 
+JWT_REFRESH_COOKIE_PATH = '/token/refresh'
 
 #local bd connexion
 LOCAL_DB_CONNEXION = {

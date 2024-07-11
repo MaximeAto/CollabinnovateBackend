@@ -10,7 +10,7 @@ from collabinnovate import db
 from collabinnovate.manage_problems.model import Problem
 from collabinnovate.manage_user_accounts.account.model import Account
 from collabinnovate.manage_user_accounts.user.model import User
-
+from .mashmallow import MashmallowProblem
 problems = Blueprint('problems', __name__)
 fake = Faker()
 
@@ -53,7 +53,7 @@ def create_problem(username):
     data = request.get_json()
     user = User.query.filter_by(email=username).first()
     account = Account.query.filter_by(user_id = user.id).first()
-    required_fields = [ 'problemTitle', 'country', 'city', 'category', 'deadline',
+    required_fields = ['problemTitle', 'country', 'city', 'category', 'deadline',
                    'business_needs_improvement', 'population_affected', 
                    'concern_population_affected', 'impacts_on_these_populations',
                    'population_volume', 'problemTitle']
@@ -68,6 +68,7 @@ def create_problem(username):
         deadline = datetime.strptime(data['deadline'], '%Y-%m-%d').date()
         
         new_problem = Problem(
+            author = user.full_name,
             account_id=account.id,
             title=data['problemTitle'],
             about_problem = data['aboutProblem'],
@@ -88,20 +89,36 @@ def create_problem(username):
         db.session.rollback()
         return jsonify({"message": "Registration error"}), 400
     except ValueError as e:
-        return jsonify({"message": "Registration error"}), 400
+        return jsonify({"message": "Registration error"}), 500
     
 
-# Obtenir la liste de tous les problèmes
 @problems.route("/all", methods=["GET"])
 def get_problems():
-  problems_list = Problem.query.all()
-  return jsonify([problem.to_dict() for problem in problems_list])
+    try:
+        problems_query = Problem.query.all()
+        problems_list = [problem.to_dict() for problem in problems_query]
+        return jsonify(problems_list), 200
+    except SQLAlchemyError as e:
+        # Log the error (optional)
+        print(f"Database error: {e}")
+        return jsonify({"error": "Database error occurred"}), 500
+    except Exception as e:
+        # Log the error (optional)
+        print(f"An unexpected error occurred: {e}")
+        return jsonify({"error": "An unexpected error occurred"}), 500
+
 
 # Obtenir un problème spécifique par ID
 @problems.route("/get/<int:id>", methods=["GET"])
 def get_problem(id):
-  problem = Problem.query.get_or_404(id)
-  return jsonify(problem.to_dict())
+    try:
+        problem = Problem.query.filter_by(id=id).first()
+        if problem:
+            return jsonify(problem.to_dict()), 200
+        else:
+            return jsonify({"error": "Problem not found"}), 404
+    except Exception as e:
+        return jsonify({"error": "An error occurred while retrieving the problem"}), 500
 
 # Mettre à jour un problème existant
 @problems.route("/update/<int:id>", methods=["PUT"])

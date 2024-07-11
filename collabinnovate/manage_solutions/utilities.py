@@ -1,3 +1,7 @@
+from collabinnovate.manage_problems.model import Problem
+from collabinnovate import db
+
+
 class Competitor:
   def __init__(self, name, strengths, weaknesses, competitive_advantage):
     self.name = name
@@ -21,5 +25,4 @@ class GeneratedRevenue:
         self.six_months = six_months
         self.one_year = one_year
         self.three_years = three_years
-
 

@@ -1,15 +1,21 @@
 from flask import Blueprint, jsonify, request, current_app
 from collabinnovate.manage_user_accounts.session.model import Session
 from collabinnovate import db
+from collabinnovate.manage_user_accounts.user.model import User
 from .utils import is_valid_ip
 
 
 sessions = Blueprint('sessions', __name__)
 
+@sessions.route('/gettoken/<email>', methods=['GET'])
+def gettoken(email):
+  try:
+    user = User.query.filter_by(email = email).first()
+    session = Session.query.filter_by(user_id = user.id).first()
+    return jsonify({"message": session.token}),200
+  except Exception as e:
+    return jsonify({"message" : e})
 
-@sessions.route('/sessions/<session_id>', methods=['GET'])
-def get_session(session_id):
-  pass
 
 @sessions.route('/create', methods=['POST'])
 def create_session():

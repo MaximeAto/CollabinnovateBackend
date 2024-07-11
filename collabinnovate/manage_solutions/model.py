@@ -1,7 +1,5 @@
 from collabinnovate import db
 from sqlalchemy import JSON
-import random
-import json
 
 
 class Solution(db.Model):
@@ -94,5 +92,56 @@ class Solution(db.Model):
     mention = db.relationship('Mention', backref='solutions', uselist = False)
 
 
-
-
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'problem_id': self.problem_id,
+            'account_id': self.account_id,
+            'description': self.description,
+            'product_offered': self.product_offered,
+            'service_offered': self.service_offered,
+            'customer_expectations': self.customer_expectations,
+            'what_company_sells': self.what_company_sells,
+            'how_product_service_marketed': self.how_product_service_marketed,
+            'customer_access_method': self.customer_access_method,
+            'competitors': self.competitors,
+            'direct_sales': self.direct_sales,
+            'retailSales': self.retailSales,
+            'direct_sales_details': self.direct_sales_details,
+            'wholesale': self.wholesale,
+            'informal': self.informal,
+            'advertising': self.advertising,
+            'direct_marketing': self.direct_marketing,
+            'sales_promotion': self.sales_promotion,
+            'display': self.display,
+            'word_of_mouth': self.word_of_mouth,
+            'trade_show': self.trade_show,
+            'mail_order': self.mail_order,
+            'human_resources': self.human_resources,
+            'legal_form': self.legal_form,
+            'financing_needed': self.financing_needed,
+            'investment_characteristics': self.investment_characteristics,
+            'suppliers': self.suppliers,
+            'variable_cost': self.variable_cost,
+            'fixed_cost': self.fixed_cost,
+            'offers': self.offers,
+            'quantity_sold': self.quantity_sold,
+            'revenue_generated': self.revenue_generated,
+            'gross_margin': self.gross_margin,
+            'net_profit': self.net_profit,
+            'Cash_flow_plan': self.Cash_flow_plan,
+            'financing_need': self.financing_need,
+            'financing_phase': self.financing_phase,
+            'financing_source': self.financing_source,
+            'remuneration_type': self.remuneration_type,
+            'impactful_introduction': self.impactful_introduction,
+            'specific_problem_addressing': self.specific_problem_addressing,
+            'innovative_solution_proposal': self.innovative_solution_proposal,
+            'team_presentation': self.team_presentation,
+            'startup_costs_explanation': self.startup_costs_explanation,
+            'necessary_capital_explanation': self.necessary_capital_explanation,
+            'expected_revenue_explanation': self.expected_revenue_explanation,
+            'investment_return_demonstration': self.investment_return_demonstration,
+            'strategicpillar': self.strategicpillar
+        }

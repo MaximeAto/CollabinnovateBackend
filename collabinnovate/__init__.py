@@ -1,5 +1,6 @@
 from flask import Flask, request, has_request_context
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 from collabinnovate import config
 from flask_migrate import Migrate
@@ -8,9 +9,6 @@ from flask_marshmallow import Marshmallow
 import logging
 from logging.handlers import RotatingFileHandler
 from flask_swagger_ui import get_swaggerui_blueprint
-import jwt
-
-
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -31,12 +29,18 @@ class LogginFormatter(logging.Formatter):
 def create_app():
   #create the instance of flask app
   app = Flask(__name__,  template_folder='templates', static_folder='static')
-  CORS(app)
+  CORS(app, supports_credentials=True)
   
   # db_config = config.LOCAL_DB_CONNEXION
   db_config = config.SQL_CONNEXION
   
   app.config['SECRET_KEY'] = config.SECRET_KEY
+  app.config['JWT_TOKEN_LOCATION'] = ['cookies']
+  app.config['JWT_COOKIE_CSRF_PROTECT'] = config.JWT_COOKIE_CSRF_PROTECT
+  app.config['JWT_ACCESS_COOKIE_PATH'] = config.JWT_ACCESS_COOKIE_PATH
+  app.config['JWT_REFRESH_COOKIE_PATH'] = config.JWT_REFRESH_COOKIE_PATH
+  app.config['JWT_COOKIE_SECURE'] = False
+  app.config['JWT_SESSION_COOKIE'] = False
   app.config.from_object(config)
   
   # Configuration pour MySQL avec XAMPP sans nom d'utilisateur ni mot de passe
@@ -49,7 +53,6 @@ def create_app():
   migrate.init_app(app=app, db=db)
   ma.init_app(app)
   mail.init_app(app=app)
-  
   
   # Configuration de la journalisation
   logging.basicConfig(level=logging.INFO)
@@ -98,6 +101,7 @@ def create_app():
     from collabinnovate.manage_solutions.routes import solutions
     from collabinnovate.manage_solutions.comments.routes import comments
     from collabinnovate.manage_solutions.mentions.routes import mentions
+    from collabinnovate.manage_favoris.routes import favoris
 
 
     app.register_blueprint(swaggerui_blueprint)
@@ -112,6 +116,7 @@ def create_app():
     app.register_blueprint(password, url_prefix='/password')
     app.register_blueprint(roles, url_prefix='/roles')
     app.register_blueprint(sessions, url_prefix='/sessions')
+    app.register_blueprint(favoris, url_prefix='/favoris')
     app.register_blueprint(users, url_prefix='/users')
     app.register_blueprint(problems, url_prefix='/problems')
     app.register_blueprint(solutions, url_prefix='/solutions')

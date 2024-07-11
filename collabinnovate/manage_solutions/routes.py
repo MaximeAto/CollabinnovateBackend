@@ -3,6 +3,7 @@ from flask import Blueprint, json, jsonify, request
 from collabinnovate import db
 from faker import Faker
 from sqlalchemy.exc import SQLAlchemyError
+from collabinnovate.manage_problems.utilities import updateParticipation
 from collabinnovate.manage_solutions.model import Solution
 from collabinnovate.manage_user_accounts.account.model import Account
 from collabinnovate.manage_user_accounts.user.model import User
@@ -129,8 +130,6 @@ def create_solution(email, problemId):
         fixedcosts = data.get('fixedcosts')
         variablecosts = data.get('variablecosts')
         offers = data.get('financialforecast[offers]')
-        
-        print(competitors)
 
         # Create new solution instance
         new_solution = Solution(
@@ -240,7 +239,8 @@ def create_solution(email, problemId):
             # Strategy mobilized pillars fields
             strategicpillar=data.get('pillar'),
         )
-        
+        updateParticipation(problemId)
+
         db.session.add(new_solution)
         db.session.commit()
         return jsonify({'message': 'The solution has been added with success'}), 201
@@ -252,13 +252,22 @@ def create_solution(email, problemId):
         return jsonify({'message': 'Registration error'}), 500
     
 
-
-
 # Route pour obtenir toutes les solutions
-@solutions.route('/all', methods=['GET'])
-def get_all_solutions():
-    solutions = Solution.query.all()
-    return jsonify([solution.serialize() for solution in solutions]), 200
+@solutions.route('/all/<problemID>', methods=['GET'])
+def get_all_solutions(problemID):
+    try:
+        solutions_query = Solution.query.filter_by(problem_id=problemID).all()
+        if not solutions_query:
+            return jsonify({"error": "No solutions found for the given problem ID"}), 404
+        
+        solutions_list = [solution.to_dict() for solution in solutions_query]
+        return jsonify(solutions_list), 200
+    except SQLAlchemyError as e:
+        return jsonify({"error": str(e)}), 500
+
+    except Exception as e:
+        return jsonify({"error": "An unexpected error occurred: "}), 500
+
 
 # Route pour obtenir une solution spécifique par son ID
 @solutions.route('/get/<int:solution_id>', methods=['GET'])

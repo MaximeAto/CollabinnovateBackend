@@ -12,6 +12,7 @@ from collabinnovate.manage_user_accounts.notification.utils import confirmation_
 from collabinnovate import mail
 import re
 from flask import render_template
+from collabinnovate.manage_user_accounts.session.utils import *
 
 
 users = Blueprint('users', __name__)
@@ -100,7 +101,7 @@ def create_user():
     existing_phonenumeber = User.query.filter_by(phone_number=data['phone_number']).first()
 
     if existing_phonenumeber or existing_mail:
-      return jsonify({'code': 'RAE', 'message': 'This user already exists.'}), 409
+      return jsonify({'message': 'This user already exists.'}), 409
 
     hashed_password = generate_password_hash(data.get('password'), method='pbkdf2:sha256', salt_length=8)
 
@@ -115,7 +116,7 @@ def create_user():
     codeping = generer_code_pin()
 
     # Génération du token JWT
-    token = generate_token(new_user.email)
+    token = generate_token(new_user.email, codeping)
 
     # Envoie du mail d'inscription
     confirmation_mail(data['email'], codeping,mail)
@@ -133,18 +134,12 @@ def create_user():
     )
     db.session.add(account)
     db.session.commit()
-  
-    # Création de la réponse avec le cookie HTTPOnly
-    response = make_response("Inscription réussie !")
-    response.set_cookie( key='token', value= token)
-    response.set_cookie(key='codeping', value=codeping)
 
-    app.logger.info(f'Token cookie set: {token}')
-    app.logger.info(f'Codeping cookie set: {codeping}')
+    create_session(new_user.id,token)
 
-    return jsonify({"token": token, "ping": codeping, "email": data['email'] })
+    return jsonify({"token": token, "ping": codeping, "email": data['email'] }),200
   except Exception as e:
-    return jsonify({'message': f'An error occurred: {str(e)}'}), 500
+    return jsonify({'message': f'An error occured'}), 500
   
   
 @users.route('/update/<int:user_id>', methods=['PUT'])

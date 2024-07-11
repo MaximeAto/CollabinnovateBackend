@@ -1,6 +1,6 @@
 from collabinnovate import ma
-from collabinnovate.manage_problems.model import Problem
+from collabinnovate.manage_solutions.mentions.model import Mention
 
-class MashmallowProblem(ma.SQLAlchemyAutoSchema):
+class MashmallowMention(ma.SQLAlchemyAutoSchema):
   class Meta:
-    model = Problem
+    model = Mention
