@@ -4,11 +4,9 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 app = create_app()
 
-@app.route('/protected', methods=['GET'])
-@jwt_required()
-def protected():
-    current_user = get_jwt_identity()
-    return jsonify(message=current_user), 200
+@app.route('/', methods=['GET'])
+def root():
+    return jsonify({"message": "good job"})
 
 
 if __name__ == '__main__':

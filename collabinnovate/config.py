@@ -32,6 +32,15 @@ LOCAL_DB_CONNEXION = {
 
 
 #distante bd connexion
+DISTANT_DB_CONNEXION_POSTGRESQL = {
+  'host': 'dpg-cqb170qj1k6c73aiq1tg-a.frankfurt-postgres.render.com',
+  'user': 'mercatobd_user',
+  'password': 'iZ1LndKDOCv0CfXXSuXpuYieim6OFgVI',
+  'database': 'mercatobd',
+  'port': '5432'
+}
+
+#distante bd connexion
 DISTANT_DB_CONNEXION = {
   'host': 'collabinnovate.cdw6awk64or5.eu-west-3.rds.amazonaws.com',
   'user': 'admin',
