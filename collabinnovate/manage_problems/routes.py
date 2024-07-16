@@ -114,7 +114,9 @@ def get_problem(id):
     try:
         problem = Problem.query.filter_by(id=id).first()
         if problem:
-            return jsonify(problem.to_dict()), 200
+            account = Account.query.filter_by(id = problem.account_id).first()
+            user = User.query.filter_by(id = account.user_id).first()
+            return jsonify({"message": problem.to_dict(), "user": user.email}), 200
         else:
             return jsonify({"error": "Problem not found"}), 404
     except Exception as e:
