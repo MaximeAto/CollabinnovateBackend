@@ -32,7 +32,7 @@ def create_app():
   CORS(app, supports_credentials=True)
   
   # db_config = config.LOCAL_DB_CONNEXION
-  db_config = config.SQL_CONNEXION
+  db_config = config.DISTANT_DB_CONNEXION
   
   app.config['SECRET_KEY'] = config.SECRET_KEY
   app.config['JWT_TOKEN_LOCATION'] = ['cookies']
