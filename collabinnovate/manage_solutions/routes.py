@@ -119,7 +119,7 @@ def thousand_solution():
 
 @solutions.route('/add/<email>/<problemId>', methods=['POST'])
 def create_solution(email, problemId):
-    # try:
+    try:
         data = request.get_json()
         user = User.query.filter_by(email=email).first()
         account = Account.query.filter_by(user_id=user.id).first()
@@ -247,12 +247,12 @@ def create_solution(email, problemId):
         db.session.add(new_solution)
         db.session.commit()
         return jsonify({'message': 'The solution has been added with success'}), 201
-    # except SQLAlchemyError as e:
-    #     db.session.rollback()
-    #     return jsonify({'message': 'Registration error'}), 400
-    # except Exception as e:
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({'message': 'Registration error'}), 400
+    except Exception as e:
 
-    #     return jsonify({'message': 'Registration error'}), 500
+        return jsonify({'message': 'Registration error'}), 500
     
 
 # Route pour obtenir toutes les solutions d'un problem
