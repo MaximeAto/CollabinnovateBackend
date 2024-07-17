@@ -3,6 +3,7 @@ from flask import Blueprint, json, jsonify, request
 from collabinnovate import db
 from faker import Faker
 from sqlalchemy.exc import SQLAlchemyError
+from collabinnovate.manage_problems.model import Problem
 from collabinnovate.manage_problems.utilities import updateParticipation
 from collabinnovate.manage_solutions.model import Solution
 from collabinnovate.manage_user_accounts.account.model import Account
@@ -118,7 +119,7 @@ def thousand_solution():
 
 @solutions.route('/add/<email>/<problemId>', methods=['POST'])
 def create_solution(email, problemId):
-    try:
+    # try:
         data = request.get_json()
         user = User.query.filter_by(email=email).first()
         account = Account.query.filter_by(user_id=user.id).first()
@@ -131,12 +132,14 @@ def create_solution(email, problemId):
         variablecosts = data.get('variablecosts')
         offers = data.get('financialforecast[offers]')
 
+
         # Create new solution instance
         new_solution = Solution(
             title=data.get('solutionTitle'),
             problem_id=problemId,
             account_id=account.id,
-            
+            author = user.full_name,
+
             # Solution information fields
             description=data.get('aboutSolution'),
             product_offered=data.get('productsOnOffer'),
@@ -150,7 +153,7 @@ def create_solution(email, problemId):
             direct_sales=data.get('directSales'),
             wholesale=data.get('wholesale'),
             informal=data.get('informalSales'),
-            retailSales=data.get('retailSales'),
+            retail_sales=data.get('retailSales'),
             
             # Promotion means fields
             advertising=data.get('advertising'),
@@ -189,7 +192,7 @@ def create_solution(email, problemId):
             },
             
             # Cash flow plan fields
-            Cash_flow_plan={
+            cash_flow_plan={
                 'firstmonth': data.get('cashflowfirstmonth'),
                 'thirdmonth': data.get('cashflowthirdmonth'),
                 'sixthmonth': data.get('cashflowsixthmonth'),
@@ -244,15 +247,15 @@ def create_solution(email, problemId):
         db.session.add(new_solution)
         db.session.commit()
         return jsonify({'message': 'The solution has been added with success'}), 201
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        return jsonify({'message': 'Registration error'}), 400
-    except Exception as e:
-        print("je suis arrivé ici")
-        return jsonify({'message': 'Registration error'}), 500
+    # except SQLAlchemyError as e:
+    #     db.session.rollback()
+    #     return jsonify({'message': 'Registration error'}), 400
+    # except Exception as e:
+
+    #     return jsonify({'message': 'Registration error'}), 500
     
 
-# Route pour obtenir toutes les solutions
+# Route pour obtenir toutes les solutions d'un problem
 @solutions.route('/all/<problemID>', methods=['GET'])
 def get_all_solutions(problemID):
     try:
@@ -267,15 +270,45 @@ def get_all_solutions(problemID):
 
     except Exception as e:
         return jsonify({"error": "An unexpected error occurred: "}), 500
+    
+@solutions.route('/getall/<id>', methods=['GET'])
+def get_all_usersolution(id):
+    allsolution = []
+    try:
+        user  = User.query.filter_by(email = id).first()
+        if user:
+            account = Account.query.filter_by(user_id = user.id).first()
+            if account:
+                problems_query = Problem.query.filter_by(account_id = account.id).all() 
+                if problems_query :
+                    for problem in problems_query:
+                        solutionByProblem_query = Solution.query.filter_by(problem_id = problem.id).all()
+                        if solutionByProblem_query:
+                            solutions = [solution.to_dict() for solution in solutionByProblem_query]
+                            for solution in solutions:
+                                allsolution.append(solution)
+                    return jsonify(allsolution), 200
+        else:
+            return jsonify({'message': "user not found"}), 404
+    except SQLAlchemyError as e:
+        return jsonify({"error": "error"}), 500
+
+    except Exception as e:
+        return jsonify({"error": "An unexpected error occurred: "}), 500
 
 
-# Route pour obtenir une solution spécifique par son ID
 @solutions.route('/get/<int:solution_id>', methods=['GET'])
 def get_solution(solution_id):
-    solution = Solution.query.get(solution_id)
-    if not solution:
-        return jsonify({'message': 'Solution non trouvée'}), 404
-    return jsonify(solution.serialize()), 200
+    try:
+        solution = Solution.query.get(solution_id)
+        if solution:
+            account = Account.query.filter_by(id = solution.account_id).first()
+            user = User.query.filter_by(id = account.user_id).first()
+            return jsonify({"message": solution.to_dict(), "user": user.email}), 200
+        else:
+            return jsonify({"error": "Solution not found"}), 404
+    except Exception as e:
+        return jsonify({"error": "An error occurred while retrieving the solution"}), 500
 
 # Route pour mettre à jour une solution existante
 @solutions.route('/update/<int:solution_id>', methods=['PUT'])

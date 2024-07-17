@@ -1,13 +1,13 @@
 from collabinnovate import db
 from sqlalchemy import JSON
 
-
 class Solution(db.Model):
     __tablename__ = "solutions"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100), nullable=False)
     problem_id = db.Column(db.Integer, db.ForeignKey('problems.id'), nullable=False)
     account_id = db.Column(db.Integer, db.ForeignKey('accounts.id'), nullable=False)
+    author = db.Column(db.String(255), nullable=False)
     
     # Solution information fields
     description = db.Column(db.Text, nullable=False)
@@ -22,7 +22,7 @@ class Solution(db.Model):
 
     # Distribution channels fields
     direct_sales = db.Column(db.Boolean)
-    retailSales = db.Column(db.Boolean)
+    retail_sales = db.Column(db.Boolean)  # changed to snake_case
     direct_sales_details = db.Column(db.Text)
     wholesale = db.Column(db.Boolean)
     informal = db.Column(db.Boolean)
@@ -53,18 +53,18 @@ class Solution(db.Model):
 
     # Financial forecast fields
     offers = db.Column(JSON)
-    quantity_sold = db.Column(db.Float)
+    quantity_sold = db.Column(db.Float, default=0.0)
     revenue_generated = db.Column(JSON)
 
     # Profit generation fields
-    gross_margin = db.Column(db.Float)
+    gross_margin = db.Column(db.Float, default=0.0)
     net_profit = db.Column(JSON)
 
     # Cash flow plan fields
-    Cash_flow_plan = db.Column(JSON)
+    cash_flow_plan = db.Column(JSON)  # changed to snake_case
 
     # Financing need field
-    financing_need = db.Column(db.Float)
+    financing_need = db.Column(db.Float, default=0.0)
 
     # Financing phase fields
     financing_phase = db.Column(db.String(100))
@@ -88,8 +88,9 @@ class Solution(db.Model):
     # Strategy mobilized pillars fields
     strategicpillar = db.Column(db.String(100))
 
-    comments = db.relationship('Comment', backref='solutions')
-    mention = db.relationship('Mention', backref='solutions', uselist = False)
+    comments = db.relationship('Comment', backref='solution')
+    mention = db.relationship('Mention', backref='solution', uselist=False)
+
 
 
     def to_dict(self):
@@ -97,6 +98,7 @@ class Solution(db.Model):
             'id': self.id,
             'title': self.title,
             'problem_id': self.problem_id,
+            'author': self.author,
             'account_id': self.account_id,
             'description': self.description,
             'product_offered': self.product_offered,
@@ -107,7 +109,7 @@ class Solution(db.Model):
             'customer_access_method': self.customer_access_method,
             'competitors': self.competitors,
             'direct_sales': self.direct_sales,
-            'retailSales': self.retailSales,
+            'retail_sales': self.retail_sales,
             'direct_sales_details': self.direct_sales_details,
             'wholesale': self.wholesale,
             'informal': self.informal,
@@ -130,7 +132,7 @@ class Solution(db.Model):
             'revenue_generated': self.revenue_generated,
             'gross_margin': self.gross_margin,
             'net_profit': self.net_profit,
-            'Cash_flow_plan': self.Cash_flow_plan,
+            'cash_flow_plan': self.cash_flow_plan,
             'financing_need': self.financing_need,
             'financing_phase': self.financing_phase,
             'financing_source': self.financing_source,

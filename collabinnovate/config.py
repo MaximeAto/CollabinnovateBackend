@@ -33,19 +33,19 @@ LOCAL_DB_CONNEXION = {
 
 #distante bd connexion
 DISTANT_DB_CONNEXION_POSTGRESQL = {
-  'host': 'dpg-cqb170qj1k6c73aiq1tg-a.frankfurt-postgres.render.com',
-  'user': 'mercatobd_user',
-  'password': 'iZ1LndKDOCv0CfXXSuXpuYieim6OFgVI',
-  'database': 'mercatobd',
+  'host': 'dpg-cqb7thmehbks73dl81ig-a.frankfurt-postgres.render.com',
+  'user': 'mercatobd_saq8_user',
+  'password': 'QuK5kxNL6mxbWh59TYajq6CeYfNvlGeP',
+  'database': 'mercatobd_saq8',
   'port': '5432'
 }
 
 #distante bd connexion
 DISTANT_DB_CONNEXION = {
-  'host': 'collabinnovate.cdw6awk64or5.eu-west-3.rds.amazonaws.com',
+  'host': 'collabinnovatedb.chkwyqi0uadk.eu-north-1.rds.amazonaws.com',
   'user': 'admin',
-  'password': 'CollabM4mdataBase',
-  'database': 'collabdb',
+  'password': '1A2Z3E4R5T#',
+  'database': 'mercatodb',
   'port': '3306'
 }
 

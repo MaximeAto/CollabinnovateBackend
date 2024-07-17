@@ -32,7 +32,7 @@ def create_app():
   CORS(app, supports_credentials=True)
   
   # db_config = config.LOCAL_DB_CONNEXION
-  db_config = config.DISTANT_DB_CONNEXION_POSTGRESQL
+  db_config = config.SQL_CONNEXION
   
   app.config['SECRET_KEY'] = config.SECRET_KEY
   app.config['JWT_TOKEN_LOCATION'] = ['cookies']
@@ -44,9 +44,9 @@ def create_app():
   app.config.from_object(config)
   
   # Configuration pour MySQL avec XAMPP sans nom d'utilisateur ni mot de passe
-  # app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{db_config['user']}:{db_config['password']}@{db_config['host']}/{db_config['database']}"
+  app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{db_config['user']}:{db_config['password']}@{db_config['host']}/{db_config['database']}"
   
-  app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql+psycopg2://{db_config['user']}:{db_config['password']}@{db_config['host']}:{db_config['port']}/{db_config['database']}"
+  # app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql+psycopg2://{db_config['user']}:{db_config['password']}@{db_config['host']}:{db_config['port']}/{db_config['database']}"
   app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
   
   db.init_app(app=app)
